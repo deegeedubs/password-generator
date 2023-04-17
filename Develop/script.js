@@ -5,22 +5,55 @@ var generateBtn = document.querySelector("#generate");
 function writePassword() {
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
-  
+
   // Ask which criteria to include
-  var capNeed = confirm("Should your password contain capital letters? OK for yes, Cancel for no.");
-  var lcNeed = confirm("Should your password contain lowercase letters? OK for yes, Cancel for no.");
-  var numNeed = confirm("Should your password contain numbers? OK for yes, Cancel for no.");
-  var specNeed = confirm("Should your password contain special characters? OK for yes, Cancel for no.");
+  var capNeed = confirm(
+    "Should your password contain capital letters? OK for yes, Cancel for no."
+  );
+  var lcNeed = confirm(
+    "Should your password contain lowercase letters? OK for yes, Cancel for no."
+  );
+  var numNeed = confirm(
+    "Should your password contain numbers? OK for yes, Cancel for no."
+  );
+  var specNeed = confirm(
+    "Should your password contain special characters? OK for yes, Cancel for no."
+  );
+// If they said no to all of these, inform them that at least one choice needs to be yes
+if ((!capNeed)&&(!lcNeed)&&(!numNeed)&&(!specNeed)){
+  alert("You must select at least one criteria");
+  writePassword();
+  return;
+};
+
   var lengthNeed = prompt(
     "How long should you password be? (8-128 characters)",
     "8"
-    );
-    
-    var passString = "";
-    var checkCap = false;
-    var checkLow = false;
-    var checkNum = false;
-    var checkSpec = false;
+  );
+
+  // If the length is not between 8 and 128, alert and re-prompt
+  var j = 0;
+  while (j!==1){
+    if (lengthNeed > 128) {
+      alert("Please enter a number between 8 and 128.");
+      lengthNeed = prompt(
+        "How long should you password be? (8-128 characters)",
+        "8");
+    } else if (lengthNeed < 8){
+     alert("Please enter a number between 8 and 128.");
+     lengthNeed = prompt(
+      "How long should you password be? (8-128 characters)",
+      "8");
+    } else {
+      j = 1;
+    }
+  };
+
+  var passString = "";
+  var checkCap = false;
+  var checkLow = false;
+  var checkNum = false;
+  var checkSpec = false;
 
   generatePassword();
 
@@ -139,7 +172,7 @@ function writePassword() {
           break;
         }
       }
-      
+
       // Function to check numbers
       for (var i = 0; i < numbers.length; i++) {
         if (passArray.includes(numbers[i])) {
@@ -158,19 +191,21 @@ function writePassword() {
     }
 
     // If any of these do not pass, generate a new password and check again
-    if ((capNeed&&(!checkCap))||(lcNeed&&(!checkLow))||(numNeed&&(!checkNum))||(specNeed&&(!checkSpec))){
+    if (
+      (capNeed && !checkCap) ||
+      (lcNeed && !checkLow) ||
+      (numNeed && !checkNum) ||
+      (specNeed && !checkSpec)
+    ) {
       generatePassword();
-    } 
+    }
   }
-  
+
   password = passString;
-  
 
   // This will output the value of password to HTML:
   passwordText.value = password;
 }
-
-writePassword();
 
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
