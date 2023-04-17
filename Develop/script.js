@@ -5,18 +5,22 @@ var generateBtn = document.querySelector("#generate");
 function writePassword() {
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
-
+  
   // Ask which criteria to include
-  var capNeed = confirm("Should your password contain capital letters?");
-  var lcNeed = confirm("Should your password contain lowercase letters?");
-  var numNeed = confirm("Should your password contain numbers?");
-  var specNeed = confirm("Should your password contain special characters?");
+  var capNeed = confirm("Should your password contain capital letters? OK for yes, Cancel for no.");
+  var lcNeed = confirm("Should your password contain lowercase letters? OK for yes, Cancel for no.");
+  var numNeed = confirm("Should your password contain numbers? OK for yes, Cancel for no.");
+  var specNeed = confirm("Should your password contain special characters? OK for yes, Cancel for no.");
   var lengthNeed = prompt(
     "How long should you password be? (8-128 characters)",
     "8"
-  );
-
-  var passString = "";
+    );
+    
+    var passString = "";
+    var checkCap = false;
+    var checkLow = false;
+    var checkNum = false;
+    var checkSpec = false;
 
   generatePassword();
 
@@ -55,7 +59,6 @@ function writePassword() {
     for (var i = 0; i < letters.length; i++) {
       capitals.push(letters[i].toUpperCase());
     }
-    // console.log(capitals);
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
     const specials = [
       "`",
@@ -109,48 +112,59 @@ function writePassword() {
       charPool = charPool.concat(specials);
     }
 
-    // create a new array of randomly chosen characters from the character pool
+    // Create a new array of randomly chosen characters from the character pool
     const passArray = [];
     for (var i = 0; i < lengthNeed; i++) {
       passArray.push(charPool[Math.floor(Math.random() * charPool.length)]);
     }
     // convert to string and check
     passString = passArray.join("");
-    // console.log(passArray);
-    // console.log(passString);
 
     checkPassword();
 
     function checkPassword() {
       // Multiple if statements to run different function checks based on what criteria is needed
-      console.log(passString);
-
       // Check capital letters
-      var checkCap = false;
       for (var i = 0; i < capitals.length; i++) {
         if (passArray.includes(capitals[i])) {
           checkCap = true;
           break;
         }
       }
-      console.log(checkCap);
 
       // Function to check lowercase letters
-      var checkLow = false;
       for (var i = 0; i < letters.length; i++) {
         if (passArray.includes(letters[i])) {
           checkLow = true;
           break;
         }
       }
-      console.log(checkLow);
+      
       // Function to check numbers
+      for (var i = 0; i < numbers.length; i++) {
+        if (passArray.includes(numbers[i])) {
+          checkNum = true;
+          break;
+        }
+      }
 
       // Function to check special characters
-
-      // If any of these do not pass, generate a new password and check again
+      for (var i = 0; i < specials.length; i++) {
+        if (passArray.includes(specials[i])) {
+          checkSpec = true;
+          break;
+        }
+      }
     }
+
+    // If any of these do not pass, generate a new password and check again
+    if ((capNeed&&(!checkCap))||(lcNeed&&(!checkLow))||(numNeed&&(!checkNum))||(specNeed&&(!checkSpec))){
+      generatePassword();
+    } 
   }
+  
+  password = passString;
+  
 
   // This will output the value of password to HTML:
   passwordText.value = password;
